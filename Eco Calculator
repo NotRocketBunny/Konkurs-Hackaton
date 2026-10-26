@@ -1,0 +1,72 @@
+def calculate_transport(car_km, public_transport_km, flights_per_year):
+    car_emission = car_km * 365 * 0.12
+    public_emission = public_transport_km * 365 * 0.04
+    flight_emission = flights_per_year * 250
+    return car_emission + public_emission + flight_emission
+
+def calculate_energy(electricity_kwh, meat_consumption):
+    electricity_emission = electricity_kwh * 12 * 0.4
+    
+    meat_emissions = {
+        "high": 2500,
+        "medium": 1700,
+        "low": 1000,
+        "vegan": 700
+    }
+    diet_emission = meat_emissions.get(meat_consumption, 1700)
+    
+    return electricity_emission + diet_emission
+
+def get_feedback(total_footprint):
+    print("\n==========================================")
+    print(f"📊 TWÓJ SZACOWANY ŚLAD WĘGLOWY: {total_footprint:.1f} kg CO2/rok")
+    print("==========================================")
+    
+    if total_footprint < 4000:
+        print("🌟 Doskonale! Twój ślad węglowy jest bardzo niski. Żyjesz w sposób bardzo przyjazny dla środowiska.")
+    elif total_footprint < 8000:
+        print("👍 Dobra robota! Twój ślad węglowy jest w okolicach średniej lub poniżej niej. Wciąż jednak są obszary do poprawy.")
+        print("💡 Wskazówka: Spróbuj ograniczyć spożycie mięsa o jeden dzień w tygodniu lub częściej korzystać z transportu publicznego.")
+    else:
+        print("⚠️ Twój ślad węglowy jest dość wysoki w porównaniu do średniej globalnej (~4 700 kg/rok).")
+        print("💡 Wskazówki, jak go zmniejszyć:")
+        print("   - Rozważ carpooling lub przesiadkę na pojazd elektryczny/hybrydowy.")
+        print("   - Odłączaj nieużywane urządzenia elektroniczne i przełącz się na żarówki LED.")
+        print("   - Ogranicz loty samolotem tam, gdzie to możliwe, lub wybieraj pociąg.")
+    print("==========================================")
+
+def run_calculator():
+    print("==========================================")
+    print("        🌍 EKOLOGICZNY KALKULATOR ŚLADU WĘGLOWEGO")
+    print("==========================================")
+    
+    try:
+        print("\n--- TRANSPORT ---")
+        car_km = float(input("Ile kilometrów dziennie przejeżdżasz samochodem? (Wpisz 0, jeśli nie dotyczy): "))
+        public_transport_km = float(input("Ile kilometrów dziennie pokonujesz transportem publicznym? (Wpisz 0, jeśli nie dotyczy): "))
+        flights_per_year = float(input("Ile lotów (w obie strony) odbywasz rocznie? "))
+        
+        print("\n--- ENERGIA I DIETA ---")
+        electricity_kwh = float(input("Jakie jest Twoje średnie miesięczne zużycie prądu w kWh? (Wciśnij Enter, aby przyjąć średnią 150): ") or 150)
+        
+        print("\nJak opiszesz swoją dietę pod kątem spożycia mięsa?")
+        print("1. Dużo mięsa (mięso do większości posiłków)")
+        print("2. Umiarkowane ilości mięsa (kilka razy w tygodniu)")
+        print("3. Mało mięsa / Wegetarianin (rzadko je mięso lub dieta roślinna)")
+        print("4. Weganin (brak produktów pochodzenia zwierzęcego)")
+        
+        diet_choice = input("Wpisz wybór (1-4): ").strip()
+        diet_map = {"1": "high", "2": "medium", "3": "low", "4": "vegan"}
+        meat_consumption = diet_map.get(diet_choice, "medium")
+        
+        transport_total = calculate_transport(car_km, public_transport_km, flights_per_year)
+        energy_total = calculate_energy(electricity_kwh, meat_consumption)
+        total_footprint = transport_total + energy_total
+        
+        get_feedback(total_footprint)
+        
+    except ValueError:
+        print("\n❌ Wykryto nieprawidłowe dane. Proszę wpisywać liczby.")
+
+if __name__ == "__main__":
+    run_calculator()
